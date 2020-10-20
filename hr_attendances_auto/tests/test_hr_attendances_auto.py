@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
-
-from odoo.tests.common import TransactionCase, tagged
 from odoo.tests import common, Form
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
-from datetime import date
-from datetime import timedelta
-from dateutil.relativedelta import relativedelta
 
 
 class TestHrAttendanceAuto(common.TransactionCase):
 
-    #test for date(2020-10-1)//You need delete default attendances
+    # test for date(2020-10-1)//You need remove default attendances
     def test_value(self):
         self.env['ir.config_parameter'].set_param('hr_attendances_auto.company_timezone', 'Europe/Lisbon')
         user = self.env['res.users'].search_count([('name', '=', 'Simao Duarte')])
