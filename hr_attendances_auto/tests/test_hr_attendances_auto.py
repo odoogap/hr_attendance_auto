@@ -4,7 +4,8 @@ from odoo.tests import common, Form
 
 class TestHrAttendanceAuto(common.TransactionCase):
 
-    # test for date(2020-10-1)//You need remove default attendances
+    # test for date(2020-10-1)
+    # You need remove default attendances
     def test_value(self):
         self.env['ir.config_parameter'].set_param('hr_attendances_auto.company_timezone', 'Europe/Lisbon')
         user = self.env['res.users'].search_count([('name', '=', 'Simao Duarte')])
