@@ -49,7 +49,8 @@ class Employee(models.Model):
         today = date.today().replace(day=1)
         next_month = today + relativedelta(months=1)
         try:
-            company_timezone = self.env['ir.config_parameter'].sudo().get_param('hr_attendances_auto.company_timezone')
+            company_timezone = self.env['ir.config_parameter'].get_param('hr_attendance_auto.company_timezone')
+            print(company_timezone)
             employees = self.env['hr.employee'].search([('user_id', '!=', False)])
             this_month_str = today.strftime(DEFAULT_SERVER_DATE_FORMAT)
             next_month_str = next_month.strftime(DEFAULT_SERVER_DATE_FORMAT)
