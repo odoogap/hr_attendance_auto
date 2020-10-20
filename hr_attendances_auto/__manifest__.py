@@ -2,17 +2,16 @@
 {
     'name': "Attendances_auto",
 
-    'summary': """
-        Automatic Check-in and Checkout """,
+    'summary': """Automatic Check-in and Checkout """,
 
     'description': """
 Check-in & Checkout
 ====================
 Now you can automatically check in and out for your business. The administrator can create all holidays of the year
-so that project does not create a check-in and check-out for this day.
+so that project does not create a check-in and check-out for this day.Check-in and check-out are automatic
 """,
 
-    'author': "Simão Duarte",
+    'author': "Odoogap",
     'website': "http://www.odoogap.com",
 
     # Categories can be used to filter modules in modules listing
