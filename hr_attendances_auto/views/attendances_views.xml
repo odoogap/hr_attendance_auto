@@ -1,0 +1,54 @@
+<odoo>
+  <record id="hr_attendance_action_employee" model="ir.actions.act_window">
+        <field name="name">Attendances</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_this_month': 1}</field>
+        <field name="domain">[('user_id','=',uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder" type="html">
+                No attendance records to display
+            </p><p>
+                The attendance records of your employees will be displayed here.
+            </p>
+        </field>
+    </record>
+    <record id="view_hr_attendance_inherit_search" model="ir.ui.view">
+        <field name="name">hr.attendance.search.expand.filter</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_filter"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='check_in_filter']" position="after">
+                <filter string="This month" name="this_month" domain="[
+                    ('check_in','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('check_in','&gt;=',time.strftime('%%Y-%%m-01'))
+                    ]"/>
+                <filter string="1 Month Ago" name="last_month" domain="[
+                    ('check_in','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('check_in','&lt;',time.strftime('%%Y-%%m-01')),
+                 ]"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_hr_attendance_inherit_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.search.expand.tree</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position="attributes">
+                <attribute name="groups">base.group_system</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_hr_attendance_inherit_from" model="ir.ui.view">
+        <field name="name">hr.attendance.search.expand.tree</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position="attributes">
+                <attribute name="groups">base.group_system</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem name="Attendance Manual" id="menu_1" sequence="10" parent="hr_attendance.menu_hr_attendance_root" groups="hr_attendance.group_hr_attendance" action="hr_attendance_action_employee"/>
+</odoo>

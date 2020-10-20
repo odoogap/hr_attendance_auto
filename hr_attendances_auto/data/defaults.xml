@@ -1,0 +1,10 @@
+<odoo noupdate="1">
+    <record id="in_out_times" model="ir.config_parameter">
+        <field name="key">hr_attendance_auto.in_out_times</field>
+        <field name="value">[{"0":[9,13], "1":[14,18]}]</field>
+    </record>
+    <record id="company_timezone" model="ir.config_parameter">
+        <field name="key">hr_attendance_auto.company_timezone</field>
+        <field name="value">Europe/Lisbon</field>
+    </record>
+</odoo>
