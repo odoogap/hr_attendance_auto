@@ -27,10 +27,10 @@ so that project does not create a check-in and check-out for this day.Check-in a
     'data': [
         'security/ir.model.access.csv',
         'views/attendances_views.xml',
-        'views/cron.xml',
         'views/public_holidays_views.xml',
         'views/res_config_settings_views.xml',
         'data/defaults.xml',
+        'data/cron.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
