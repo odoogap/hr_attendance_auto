@@ -5,22 +5,24 @@
         <field name="name">public.holiday.tree</field>
         <field name="model">public.holiday</field>
         <field name="arch" type="xml">
-            <tree string="Public holiday">
+            <tree string="Public holiday" editable="top">
                 <field name="name"/>
                 <field name="date_holidays"/>
             </tree>
         </field>
     </record>
-            <!-- Search View public.holiday -->
+
+    <!-- Search View public.holiday -->
     <record id="public_holiday_search" model="ir.ui.view">
         <field name="name">public.holiday.search</field>
         <field name="model">public.holiday</field>
         <field name="arch" type="xml">
             <search string="Public holiday">
                 <field name="name"/>
+                <filter string="Date" name="current_year" date="date_holidays" default_period="this_year"/>
                 <group col="8" colspan="4" expand="0" string="Group By">
-                    <filter name="group_by_month" string="Creation date (month)" domain="[]"
-                            context="{'group_by':'create_date:month'}"/>
+                    <filter name="group_by_date_holidays" string="Date" domain="[]"
+                            context="{'group_by':'date_holidays'}"/>
                 </group>
             </search>
         </field>
