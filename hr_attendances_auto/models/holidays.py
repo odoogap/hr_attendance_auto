@@ -27,8 +27,8 @@ class PublicHoliday(models.Model):
 
 
 # This function give all days of current month
-def next_day():
-    day = date.today().replace(day=1)
+def next_day(day):
+    # day = date.today().replace(day=1)
     month = day.month
     while day.month == month:
         yield day
@@ -45,19 +45,24 @@ class Employee(models.Model):
     _inherit = 'hr.employee'
 
     @api.model
-    def auto_attendance(self):
-        today = date.today().replace(day=1)
+    def auto_attendance(self, today=date.today().replace(day=1), employee=False):
+        # echo "from datetime import date; today=date(2020,10,11);env['hr.employee'].auto_attendance(today=today, employee='Diogo')" | odoogap-shell -d v12_odoogap
+        if employee:
+            employees = self.env['hr.employee'].search([('user_id', 'ilike', employee)])
+        else:
+            employees = self.env['hr.employee'].search([('user_id', '!=', False)])
+        today = today.replace(day=1)
         next_month = today + relativedelta(months=1)
         try:
             company_timezone = self.env['ir.config_parameter'].get_param('hr_attendance_auto.company_timezone')
-            employees = self.env['hr.employee'].search([('user_id', '!=', False)])
+
             this_month_str = today.strftime(DEFAULT_SERVER_DATE_FORMAT)
             next_month_str = next_month.strftime(DEFAULT_SERVER_DATE_FORMAT)
             holidays_list = [s['date_holidays'] for s in self.env['public.holiday'].search_read([
                 ('date_holidays', '>=', this_month_str),
                 ('date_holidays', '<', next_month_str),
             ], ['date_holidays'])]
-            for day in [i for i in next_day()]:
+            for day in [i for i in next_day(today)]:
                 if day.weekday() in (5, 6) or day in holidays_list:
                     continue
                 else:
