@@ -50,5 +50,5 @@
         </field>
     </record>
 
-    <menuitem name="Attendance Manual" id="menu_1" sequence="10" parent="hr_attendance.menu_hr_attendance_root" groups="hr_attendance.group_hr_attendance" action="hr_attendance_action_employee"/>
+    <menuitem name="Attendance Manual" id="menu_1" sequence="0" parent="hr_attendance.menu_hr_attendance_root" groups="hr_attendance.group_hr_attendance" action="hr_attendance_action_employee"/>
 </odoo>
