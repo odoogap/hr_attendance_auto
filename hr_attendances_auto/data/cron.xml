@@ -1,8 +1,8 @@
 <odoo>
-    <record id="test_Attendance_cron" model="ir.cron">
-        <field name="name">Check Attendance</field>
+    <record id="auto_attendance_cron" model="ir.cron">
+        <field name="name">Auto Attendance: Check Attendance</field>
         <field name="model_id" ref="model_hr_employee"/>
-        <field name="active" eval="False"/>
+        <field name="active" eval="True"/>
         <field name="type">ir.actions.server</field>
         <field name="state">code</field>
         <field name="code">model.auto_attendance()</field>
@@ -10,4 +10,16 @@
         <field name="interval_type">months</field>
         <field name="numbercall">-1</field>
     </record>
+    <record id="email_attendance_cron" model="ir.cron">
+        <field name="name">Auto Attendance: Email Attendance</field>
+        <field name="model_id" ref="model_hr_attendance"/>
+        <field name="active" eval="True"/>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="code">model.cron_send_email_reports()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">-1</field>
+    </record>
+
 </odoo>

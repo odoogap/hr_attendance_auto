@@ -28,7 +28,6 @@ class PublicHoliday(models.Model):
 
 # This function give all days of current month
 def next_day(day):
-    # day = date.today().replace(day=1)
     month = day.month
     while day.month == month:
         yield day
@@ -39,6 +38,35 @@ class Attendance(models.Model):
     _inherit = 'hr.attendance'
 
     user_id = fields.Many2one('res.users', 'User', related='employee_id.user_id', store=True, readonly=False)
+
+    def cron_send_email_reports(self):
+        qweb = self.env['ir.qweb'].sudo()
+        for employee in self.env['hr.employee'].search([('user_id', '!=', False)]):
+            d1 = (datetime.today().replace(day=1) - relativedelta(months=1)).date()
+            domain = lambda x: [
+                ('employee_id', '=', employee.id),
+                ('check_in', '>=', x),
+                ('check_in', '<=', x),
+            ]
+            lines = []
+            for day in [i for i in next_day(d1)]:
+                note = ", ".join([
+                    "%(check_in)s to %(check_out)s " % {
+                        'check_in': d.check_in and d.check_in.strftime("%H:%M") or '',
+                        'check_out': d.check_out and d.check_out.strftime("%H:%M") or ''
+                    } for d in self.env['hr.attendance'].search(domain(day), order='check_in')])
+                style = day.weekday() in (5, 6) and 'background-color: yellow' or ''
+                lines.append(dict(day=day, note=note, style=style))
+            content = qweb.render("hr_attendances_auto.email_template_check_attendances", {
+                'title': _('Please check your last months attendance:'),
+                'lines': lines
+            })
+            mail = self.env['mail.mail'].create({
+                'subject': _('Monthly Attendance Report %s') % d1.strftime('%B-%Y'),
+                'email_to': employee.user_id.partner_id.email,
+                'body_html': content,
+            })
+            mail.send()
 
 
 class Employee(models.Model):

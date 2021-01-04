@@ -1,4 +1,48 @@
 <odoo>
+
+    <template id="email_template_check_attendances">&lt;!DOCTYPE html&gt;
+        <html t-att-lang="lang and lang.replace('_', '-')"
+              t-att-data-editable="'1' if editable else None"
+              t-att-data-translatable="'1' if translatable else None"
+              t-att-data-edit_translations="'1' if edit_translations else None"
+              t-att-data-main-object="repr(main_object) if editable else None">
+            <head>
+                <meta http-equiv="cache-control" content="no-cache"/>
+                <meta http-equiv="pragma" content="no-cache"/>
+            </head>
+            <body>
+                <div class="container">
+                    <p class="error-message text-red" style="text-align: right;"/>
+                    <h3>
+                        <t t-esc="title"/>
+                    </h3>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th align="left">Day</th>
+                                <th align="left">  </th>
+                                <th align="left">Attendance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="lines" t-as="line">
+                                <tr t-att-style="line['style']">
+                                    <td align="left">
+                                        <t t-esc="line['day']"/>
+                                    </td>
+                                    <td align="left">  </td>
+                                    <td align="left">
+                                        <t t-esc="line['note']"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </body>
+        </html>
+    </template>
+
     <!-- public.holiday -->
     <!-- Tree View public.holiday -->
     <record id="public_holiday_tree" model="ir.ui.view">
