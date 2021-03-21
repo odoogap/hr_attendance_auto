@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_attendance_sheet_detail">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="oe_structure"/>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2>
+                            <span>
+                                Attendance Report
+                            </span>
+                            <span t-field="o.name"/>
+                        </h2>
+                    </div>
+                </div>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.attendance_ids" t-as="line">
+                            <td>
+                                <span t-field="line.date"/>
+                            </td>
+                            <td>
+                                <span t-field="line.name"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_attendance_sheet">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_attendances_auto.report_attendance_sheet_detail" t-lang="o.user_id.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_euro_no_margin" model="report.paperformat">
+        <field name="name">European A4 without borders</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+    </record>
+
+    <report
+            id="action_report_attendance_sheet"
+            string="Expenses Report"
+            model="report.monthly.attendance"
+            report_type="qweb-html"
+            name="hr_attendances_auto.report_attendance_sheet"
+            file="hr_attendances_auto.report_attendance_sheet"
+            paperformat="hr_attendances_auto.paperformat_euro_no_margin"
+            print_report_name="'Monthly Attendance - %s' % (object.name).replace('/', '')"
+    />
+
+    <!-- attendance.report.wizard -->
+
+    <!-- Form View attendance.report.wizard -->
+    <record model="ir.ui.view" id="attendance_report_wizard_form">
+        <field name="name">attendance.report.wiz.form</field>
+        <field name="model">attendance.report.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Report">
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="employee_id" options="{'no_create_edit': True, 'no_open': True}"/>
+                </group>
+                <footer>
+                    <button name="button_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action attendance.report.wizard -->
+    <record id="action_attendance_report_wizard" model="ir.actions.act_window">
+        <field name="name">Attendance Report</field>
+        <field name="res_model">attendance.report.wiz</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_attendance_report_wizard"
+              name="Attendance Report"
+              sequence="2"
+              parent="hr_attendance.menu_hr_attendance_root"
+              action="hr_attendances_auto.action_attendance_report_wizard"/>
+
+</odoo>

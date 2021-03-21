@@ -31,6 +31,7 @@ so that project does not create a check-in and check-out for this day.Check-in a
         'views/res_config_settings_views.xml',
         'data/defaults.xml',
         'data/cron.xml',
+        'report/attendance_reports.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
