@@ -1,49 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="report_attendance_sheet_detail">
-        <t t-call="web.external_layout">
-            <div class="page">
-                <div class="oe_structure"/>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h2>
-                            <span>
-                                Attendance Report
-                            </span>
-                            <span t-field="o.name"/>
-                        </h2>
-                    </div>
-                </div>
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr t-foreach="o.attendance_ids" t-as="line">
-                            <td>
-                                <span t-field="line.date"/>
-                            </td>
-                            <td>
-                                <span t-field="line.name"/>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="oe_structure"/>
-            </div>
-        </t>
-    </template>
-
     <template id="report_attendance_sheet">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="hr_attendances_auto.report_attendance_sheet_detail" t-lang="o.user_id.partner_id.lang"/>
+
+                <div class="page">
+
+                    <h2>
+                        <span>
+                            Attendance Report
+                        </span>
+                    </h2>
+
+                    <div class="col-lg-12">
+                        <h3>
+                            <span t-esc="data['form']['employee_id'][1]"/>
+                        </h3>
+                        <p>From
+                            <span t-esc="data['form']['d1']"/>
+                            to
+                            <span t-esc="data['form']['d2']"/>
+                        </p>
+                    </div>
+
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>    </th>
+                                <th>Attendance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="lines" t-as="o">
+                                <tr>
+                                    <td>
+                                        <span t-esc="o['day']"/>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <t t-foreach="o['line_ids']" t-as="line">
+                                            <span t-esc="line['in']"/>
+                                            /
+                                            <span t-esc="line['out']"/>
+                                        </t>
+                                    </td>
+
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <br/>
+                            <h2>
+                                <span>
+                                    Signature
+                                </span>
+                            </h2>
+                            <br/>
+                            <p>_________________________________________________</p>
+                        </div>
+                    </div>
+                </div>
             </t>
-        </t>
     </template>
 
     <record id="paperformat_euro_no_margin" model="report.paperformat">
@@ -53,7 +73,7 @@
         <field name="orientation">Portrait</field>
         <field name="margin_top">0</field>
         <field name="margin_bottom">0</field>
-        <field name="margin_left">0</field>
+        <field name="margin_left">20</field>
         <field name="margin_right">0</field>
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
@@ -61,14 +81,15 @@
 
     <report
             id="action_report_attendance_sheet"
-            string="Expenses Report"
-            model="report.monthly.attendance"
-            report_type="qweb-html"
+            string="Attendance Report"
+            model="hr.attendance"
+            report_type="qweb-pdf"
             name="hr_attendances_auto.report_attendance_sheet"
             file="hr_attendances_auto.report_attendance_sheet"
             paperformat="hr_attendances_auto.paperformat_euro_no_margin"
             print_report_name="'Monthly Attendance - %s' % (object.name).replace('/', '')"
     />
+
 
     <!-- attendance.report.wizard -->
 
@@ -79,12 +100,11 @@
         <field name="arch" type="xml">
             <form string="Attendance Report">
                 <group>
-                    <field name="date_from"/>
-                    <field name="date_to"/>
                     <field name="employee_id" options="{'no_create_edit': True, 'no_open': True}"/>
+                    <field name="month_period"/>
                 </group>
                 <footer>
-                    <button name="button_report" string="Print" type="object" class="btn-primary"/>
+                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-default" special="cancel"/>
                 </footer>
             </form>
