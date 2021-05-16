@@ -97,22 +97,28 @@ class Employee(models.Model):
                     my_datetime = datetime.combine(day, datetime.min.time())
                     for rec in employees:
                         hour = json.loads(self.env['ir.config_parameter'].get_param('hr_attendance_auto.in_out_times'))
-                        for timer in hour[0]:
-                            final_hour = hour[0][timer]
-                            check_in_datetime = my_datetime.replace(hour=final_hour[0], minute=0, second=0, microsecond=0)
-                            check_out_datetime = my_datetime.replace(hour=final_hour[1], minute=0, second=0, microsecond=0)
-                            check_in_str = fields.Datetime.from_string(check_in_datetime)
-                            check_out_str = fields.Datetime.from_string(check_out_datetime)
-                            check_in_final = timezone(company_timezone).localize(check_in_str).astimezone(pytz.UTC)
-                            check_out_final = timezone(company_timezone).localize(check_out_str).astimezone(pytz.UTC)
-                            self.env['hr.attendance'].create([
-                                {
-                                    'employee_id': rec.id,
-                                    'check_in': check_in_final,
-                                    'check_out': check_out_final,
-                                },
-                            ])
-            self.env.cr.commit()
+                        try:
+                            for timer in hour[0]:
+                                final_hour = hour[0][timer]
+                                check_in_datetime = my_datetime.replace(hour=final_hour[0], minute=0, second=0, microsecond=0)
+                                check_out_datetime = my_datetime.replace(hour=final_hour[1], minute=0, second=0, microsecond=0)
+                                check_in_str = fields.Datetime.from_string(check_in_datetime)
+                                check_out_str = fields.Datetime.from_string(check_out_datetime)
+                                check_in_final = timezone(company_timezone).localize(check_in_str).astimezone(pytz.UTC)
+                                check_out_final = timezone(company_timezone).localize(check_out_str).astimezone(pytz.UTC)
+                                self.env['hr.attendance'].create([
+                                    {
+                                        'employee_id': rec.id,
+                                        'check_in': check_in_final,
+                                        'check_out': check_out_final,
+                                    },
+                                ])
+
+                            self.env.cr.commit()
+                        except exceptions.ValidationError as e:
+                            self.env.cr.rollback()
+                            continue
+
         except Exception:
             self.env.cr.rollback()
             traceback.print_exc()
