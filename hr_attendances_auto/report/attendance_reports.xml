@@ -28,7 +28,7 @@
                             <tr>
                                 <th>Date</th>
                                 <th>    </th>
-                                <th>Attendance</th>
+                                <th>Attendance (UTC)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,9 +40,10 @@
                                     <td></td>
                                     <td>
                                         <t t-foreach="o['line_ids']" t-as="line">
-                                            <span t-esc="line['in']"/>
+                                             -
+                                            <span t-esc="line['in']" t-options='{"widget": "float_time"}'/>
                                             /
-                                            <span t-esc="line['out']"/>
+                                            <span t-esc="line['out']" t-options='{"widget": "float_time"}'/>
                                         </t>
                                     </td>
 

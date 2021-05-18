@@ -1,7 +1,7 @@
 from odoo import _, api, fields, models
 from dateutil.relativedelta import relativedelta
 from datetime import timedelta
-
+import pytz
 
 # This function give all days of current month
 def next_day(day):
@@ -17,6 +17,10 @@ class ReportAttendanceSheet(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
+        def get_float_hours(date_check):
+            date_check_pt = date_check.replace(tzinfo=pytz.UTC).astimezone(pytz.timezone(self.env.user.tz or 'UTC'))
+            return date_check_pt.hour + date_check_pt.minute / 60
+
         data = data if data is not None else {}
         d1 = fields.Date.from_string(data['form']['d1'])
         employee_id = data['form']['employee_id'][0]
@@ -26,14 +30,14 @@ class ReportAttendanceSheet(models.AbstractModel):
             ('check_in', '<=', x),
         ]
         lines = []
-        for day in next_day(d1):
 
+        for day in next_day(d1):
             line_ids = self.env['hr.attendance'].search(domain(day), order='check_in')
             lines.append({
                 'day': fields.Date.to_string(day),
                 'line_ids': [{
-                    'in': l.check_in.strftime("%H:%M:%S"),
-                    'out': l.check_out.strftime("%H:%M:%S"),
+                    'in': l.check_in and get_float_hours(l.check_in) or 0,
+                    'out': l.check_out and get_float_hours(l.check_out) or 0,
                 } for l in line_ids]
             })
 
